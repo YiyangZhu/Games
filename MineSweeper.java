@@ -2,9 +2,14 @@ import java.util.Random;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class MineSweeper{
+public class MineSweeper implements MouseListener{
     static Cell[][] a;
     static int n;
     static int leftMine;
@@ -25,12 +30,49 @@ public class MineSweeper{
         panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         JFrame frame = new JFrame("Mine Sweeper");
         frame.setSize(800,800);
+        JMenuBar menuBar = new JMenuBar();
+        frame.setJMenuBar(menuBar);
+        JMenu game = new JMenu("Game");
+        //JMenu options = new JMenu("Options");
+        JMenu help = new JMenu("Help"); 
+        menuBar.add(game);
+        //menuBar.add(options);
+        menuBar.add(help);
+        //JMenuItem start = new JMenuItem("start");
+        //JMenuItem end = new JMenuItem("end");
+        JMenuItem exit = new JMenuItem("exit");
+        //game.add(start);
+        //game.add(end);
+        game.add(exit);
+        //JMenuItem setSize = new JMenuItem("set size");
+        //JMenuItem setQuantities = new JMenuItem("set mine quantities");
+        //JMenuItem setDifficulty = new JMenuItem("different level");
+        //options.add(setSize);
+        //options.add(setQuantities);
+        //options.add(setDifficulty);
+        JMenu contact = new JMenu("contact us");
+        JMenuItem contact1 = new JMenuItem("ererandkeke@gmail.com");
+        help.add(contact);
+        contact.add(contact1);
+        JMenu howToPlay = new JMenu("how to play");
+        JMenuItem instructions = new JMenuItem("refer to the last three lines");
+        help.add(howToPlay);
+        howToPlay.add(instructions);
+        
+        class exitaction implements ActionListener{
+            public void actionPerformed(ActionEvent e){
+                System.exit(0);
+            }
+        }
+        
+        exit.addActionListener(new exitaction());
+        
         panel.setLayout(new GridBagLayout());
         frame.getContentPane().add(panel);
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n; j++){
-                int rows = i;
-                int columns = j;
+                final int rows = i;
+                final int columns = j;
                 a[i][j].row = i;
                 a[i][j].col = j;
                 gbc.gridx = i;
@@ -43,6 +85,7 @@ public class MineSweeper{
                         a[rows][columns].setTheText();
                         if(a[rows][columns].isMine){
                             chances--;
+                            a[rows][columns].setBackground(Color.black); 
                         }
                         if(chances == 0 && count == 0){
                             a[rows][columns].setText("Lose!");
@@ -60,6 +103,41 @@ public class MineSweeper{
                        
                     }
                 });
+                a[rows][columns].addMouseListener(new MouseListener(){
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getButton() == MouseEvent.BUTTON3) {
+//right click to mark
+                            a[rows][columns].setText("marked");
+                            if(!a[rows][columns].isMine){
+                                chances--;
+                                a[rows][columns].setBackground(Color.black); 
+                            }
+                            
+                            if(chances == 0 && count == 0){
+                            a[rows][columns].setText("Lose!");
+                            count = 1;
+                            JLabel label4 = new JLabel("The frame will be closed after several clicks.");
+                            gbc.gridx = 0;
+                            gbc.gridy = n+40;
+                            gbc.gridheight = 10;
+                            gbc.gridwidth = 600;
+                            panel.add(label4,gbc);
+                        }
+                        if(chances == -1){
+                            frame.setVisible(false);
+                        }
+                        }
+                    }
+                    public void mouseExited(MouseEvent e) {
+                    }
+                    public void mouseEntered(MouseEvent e) {
+                    }
+                    public void mouseReleased(MouseEvent e) {
+                    }
+                    public void mousePressed(MouseEvent e) {
+                    }
+                    
+                });
             }
         }
         JLabel label1 = new JLabel("Instructions: avoid clicking mines, once you click"+
@@ -69,7 +147,7 @@ public class MineSweeper{
         gbc.gridheight = 10;
         gbc.gridwidth = 600;
         panel.add(label1,gbc);
-        JLabel label2 = new JLabel("You have "+chances+" chances to click mines.");
+        JLabel label2 = new JLabel("You have "+chances+" chances to click mines or mark incorrectly.");
         gbc.gridx = 0;
         gbc.gridy = n+20;
         gbc.gridheight = 10;
@@ -86,15 +164,6 @@ public class MineSweeper{
         frame.setVisible(true);
     }
     
-    static void open(Cell button){
-        button.setVisible(false);
-        if(a[button.row][button.col].isMine){
-            System.out.println();
-        } else {
-            return;
-        }
-    }
-    
     static void generateMines(){
         n = 9;
         a = new Cell[n][n];
@@ -102,6 +171,8 @@ public class MineSweeper{
             for(int j = 0; j < n; j++){
                 int temp = (int) (Math.random()*12);
                 a[i][j] = new Cell(temp);
+                a[i][j].setForeground(Color.black);
+                a[i][j].setOpaque(true);  
             }
         }
     }
@@ -205,5 +276,20 @@ public class MineSweeper{
             System.out.println();
         }
         System.out.println();
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+    }
+    
+    public void mouseEntered(MouseEvent e) {
+    }
+    public void mouseExited(MouseEvent e) {
+    }
+    public void mousePressed(MouseEvent e) {
+    }
+    public void mouseReleased(MouseEvent e) {
+    }
+    
+    public void mouseClicked(MouseEvent e) {
     }
 }

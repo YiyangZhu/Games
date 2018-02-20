@@ -1,4 +1,11 @@
 import javax.swing.JButton;
+import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 class Cell extends JButton{
     int number;
@@ -23,7 +30,7 @@ class Cell extends JButton{
     
     void setTheText(){
         if(isMine){
-            setText("Mine");
+            setText("*");
         } else {
             setText(""+mineCount);
         }
@@ -31,10 +38,11 @@ class Cell extends JButton{
     
     final int display(){
         if(isMine){
-            System.out.print("Mine"+"      ");
+            System.out.print("*"+"      ");
         } else {
             System.out.print("Count: "+mineCount+"   ");
         }
         return mineCount;
     }
+    
 }
